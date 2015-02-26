@@ -16,34 +16,17 @@ module.exports = function(grunt) {
   grunt.registerMultiTask("skeleton_assembler_widgets", "Grunt plugin to assemble skeleton components as AngularJS widgets.", function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      punctuation: ".",
-      separator: ", "
+      componentsFolder: "",
+      stylesFolder: ""
     });
 
-    // Iterate over all specified file groups.
+    var task = require('./skeleton-assembler-widgets/task')(grunt)
+
+  //   // Iterate over all specified file groups.
     this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn("Source file \"" + filepath + "\" not found.");
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln("File \"" + f.dest + "\" created.");
+      var src = f.src[0];
+      var dest = f.dest;
+      task.build(src, dest, options)
     });
   });
 
